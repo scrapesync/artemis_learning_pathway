@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ArtemisAI — Team Learning Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#060a13;--card:#0d1117;--card-hover:#111827;--border:#1e293b;--border-hi:#334155;--teal:#00d4aa;--teal-dim:rgba(0,212,170,.15);--indigo:#6366f1;--indigo-dim:rgba(99,102,241,.15);--amber:#f59e0b;--amber-dim:rgba(245,158,11,.15);--rose:#f43f5e;--rose-dim:rgba(244,63,94,.15);--sky:#38bdf8;--sky-dim:rgba(56,189,248,.15);--lime:#84cc16;--lime-dim:rgba(132,204,22,.15);--violet:#a78bfa;--violet-dim:rgba(167,139,250,.15);--pink:#ec4899;--pink-dim:rgba(236,72,153,.15);--text:#e2e8f0;--muted:#64748b;--dim:#475569;--font:'Outfit',sans-serif;--mono:'JetBrains Mono',monospace}
+*{margin:0;padding:0;box-sizing:border-box}body{background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh}::selection{background:var(--teal);color:var(--bg)}::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border-hi);border-radius:3px}
+#login-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px;background:radial-gradient(ellipse at 30% 20%,rgba(0,212,170,.06) 0%,transparent 50%),radial-gradient(ellipse at 70% 80%,rgba(99,102,241,.04) 0%,transparent 50%),var(--bg)}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:48px 40px;width:100%;max-width:520px;text-align:center;animation:fadeUp .6s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.login-logo{font-family:var(--mono);font-size:13px;letter-spacing:.15em;color:var(--teal);margin-bottom:8px;text-transform:uppercase}.login-title{font-size:28px;font-weight:700;margin-bottom:6px}.login-sub{color:var(--muted);font-size:14px;margin-bottom:32px}
+.login-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.login-btn{background:var(--card-hover);border:1px solid var(--border);border-radius:10px;padding:14px 8px;cursor:pointer;font-family:var(--font);font-size:13px;font-weight:500;color:var(--text);transition:all .2s;display:flex;flex-direction:column;align-items:center;gap:6px}
+.login-btn:hover{border-color:var(--teal);background:var(--teal-dim);transform:translateY(-2px)}
+.login-btn .avatar{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;font-family:var(--mono)}
+#app{display:none}.topbar{position:sticky;top:0;z-index:100;background:rgba(6,10,19,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 24px;height:56px;display:flex;align-items:center;justify-content:space-between}
+.topbar-left{display:flex;align-items:center;gap:12px}.topbar-logo{font-family:var(--mono);font-size:12px;letter-spacing:.12em;color:var(--teal);text-transform:uppercase}.topbar-sep{color:var(--border-hi)}.topbar-user{font-size:14px;font-weight:600}.topbar-title{font-size:10px;color:var(--teal);font-family:var(--mono);display:block}
+.topbar-right{display:flex;align-items:center;gap:12px}.topbar-stat{font-family:var(--mono);font-size:12px;color:var(--muted)}.topbar-stat b{color:var(--teal)}
+.btn-logout{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-family:var(--mono);font-size:11px;padding:6px 12px;cursor:pointer;transition:all .15s}.btn-logout:hover{border-color:var(--rose);color:var(--rose)}
+.main{max-width:1100px;margin:0 auto;padding:32px 24px}.hero-greeting{font-size:22px;font-weight:300;margin-bottom:4px;color:var(--muted)}.hero-greeting b{color:var(--text);font-weight:600}.hero-tagline{font-family:var(--mono);font-size:11px;color:var(--teal);letter-spacing:.08em;margin-bottom:28px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:32px}.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 18px;transition:border-color .2s}.stat-card:hover{border-color:var(--border-hi)}.stat-label{font-size:11px;color:var(--muted);font-family:var(--mono);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}.stat-value{font-size:28px;font-weight:700}.stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.tabs{display:flex;gap:4px;margin-bottom:24px;flex-wrap:wrap}.tab{background:none;border:1px solid transparent;border-radius:8px;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--muted);padding:8px 14px;cursor:pointer;transition:all .15s}.tab:hover{color:var(--text);border-color:var(--border)}.tab.active{color:var(--teal);border-color:var(--teal);background:var(--teal-dim)}
+.phase-section{margin-bottom:32px;animation:fadeUp .4s ease}.phase-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}.phase-badge{font-family:var(--mono);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:6px;white-space:nowrap}.phase-progress-bar{flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;min-width:60px}.phase-progress-fill{height:100%;border-radius:2px;transition:width .4s ease}.phase-pct{font-family:var(--mono);font-size:12px;font-weight:600;min-width:36px;text-align:right}
+.skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px}
+.skill-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:14px 16px;cursor:pointer;transition:all .2s;user-select:none;display:flex;align-items:flex-start;gap:12px}.skill-card:hover{border-color:var(--border-hi);background:var(--card-hover)}.skill-card.completed{border-color:var(--teal);background:var(--teal-dim)}.skill-card.completed .skill-check{background:var(--teal);color:var(--bg);border-color:var(--teal)}
+.skill-check{width:26px;height:26px;border-radius:7px;flex-shrink:0;margin-top:1px;border:2px solid var(--border-hi);display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s}.skill-info{flex:1;min-width:0}.skill-name{font-size:13px;font-weight:600;margin-bottom:2px}.skill-desc{font-size:11px;color:var(--muted);line-height:1.4}.skill-meta{font-family:var(--mono);font-size:10px;color:var(--dim);margin-top:4px}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:20px}.team-member-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;text-align:center;transition:all .2s}.team-member-card:hover{border-color:var(--border-hi);transform:translateY(-2px)}
+.tm-avatar{width:48px;height:48px;border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;font-family:var(--mono)}.tm-name{font-size:14px;font-weight:600;margin-bottom:2px}.tm-title{font-size:10px;color:var(--teal);font-family:var(--mono);margin-bottom:10px;min-height:14px}.tm-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:6px}.tm-bar-fill{height:100%;border-radius:3px;transition:width .4s}.tm-stats{font-family:var(--mono);font-size:11px;color:var(--muted)}.tm-stats b{color:var(--teal)}
+@media(max-width:768px){.stats-row{grid-template-columns:1fr 1fr}.topbar{padding:0 14px}.main{padding:20px 14px}.topbar-stat{display:none}}@media(max-width:520px){.login-grid{grid-template-columns:1fr 1fr}.stats-row{grid-template-columns:1fr}.skills-grid{grid-template-columns:1fr}.team-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div id="login-screen"><div class="login-box"><div class="login-logo">artemisai</div><div class="login-title">Team Learning Hub</div><div class="login-sub">Select your profile to continue</div><div class="login-grid" id="login-grid"></div></div></div>
+<div id="app"><div class="topbar"><div class="topbar-left"><span class="topbar-logo">artemisai</span><span class="topbar-sep">|</span><span><span class="topbar-user" id="topbar-user"></span><span class="topbar-title" id="topbar-title"></span></span></div><div class="topbar-right"><span class="topbar-stat"><b id="stat-done">0</b> / <span id="stat-total">0</span></span><button class="btn-logout" onclick="logout()">logout</button></div></div><div class="main"><div class="hero-greeting" id="hero-greeting"></div><div class="hero-tagline" id="hero-tagline"></div><div class="stats-row" id="stats-row"></div><div class="tabs" id="tabs"></div><div id="content"></div></div></div>
+<script>
+const TEAM=[
+{id:'asad',name:'Asad Ikram',title:'Chief Technology Officer / Co-Founder',color:'var(--teal)',colorDim:'var(--teal-dim)',initials:'AI',pass:'asad123'},
+{id:'faheem',name:'Faheem Haider',title:'Founding Data Engineer',color:'var(--indigo)',colorDim:'var(--indigo-dim)',initials:'FH',pass:'faheem123'},
+{id:'rafeh',name:'Abdul Rafeh',title:'Chief Marketing Officer',color:'var(--sky)',colorDim:'var(--sky-dim)',initials:'AR',pass:'rafeh123'},
+{id:'alex',name:'Alex Male',title:'Founder',color:'var(--amber)',colorDim:'var(--amber-dim)',initials:'AM',pass:'alex123'},
+{id:'lewis',name:'Lewis Mulhall',title:'Co-Founder',color:'var(--lime)',colorDim:'var(--lime-dim)',initials:'LM',pass:'lewis123'},
+{id:'jill',name:'Jill Male',title:'Co-Founder',color:'var(--violet)',colorDim:'var(--violet-dim)',initials:'JM',pass:'jill123'},
+{id:'hannah',name:'Hannah',title:'Head of Operations & Coordination',color:'var(--pink)',colorDim:'var(--pink-dim)',initials:'HN',pass:'hannah123'},
+{id:'filza',name:'Syeda Filza Bukhari',title:'Chief Legal Officer',color:'var(--rose)',colorDim:'var(--rose-dim)',initials:'FA',pass:'filza123'},
+];
+
+const S=(id,ph,pn,pc,pd,n,d,m)=>({id,phase:ph,phaseName:pn,phaseColor:pc,phaseDim:pd,name:n,desc:d,meta:m});
+
+const TECH_SKILLS=[
+S('t01','foundations','Foundations','var(--teal)','var(--teal-dim)','Transformer Architecture from Scratch','Attention, positional encoding, encoder/decoder — Karpathy Zero to Hero','Sessions 1-6 · Foundation'),
+S('t02','foundations','Foundations','var(--teal)','var(--teal-dim)','Micrograd & Backpropagation','Build a tiny autograd engine, understand gradient flow and chain rule','Sessions 7-8 · Why fine-tuning works'),
+S('t03','foundations','Foundations','var(--teal)','var(--teal-dim)','GPT from Scratch','Build character-level GPT — tokenization, training loop, sampling','Sessions 9-12 · Karpathy nanoGPT'),
+S('t04','foundations','Foundations','var(--teal)','var(--teal-dim)','HuggingFace Deep Dive','Tokenizers, model hub, Trainer API, pipelines, PEFT/LoRA adapters','Sessions 13-16 · HF LLM Course'),
+S('t05','foundations','Foundations','var(--teal)','var(--teal-dim)','Fine-tuning for Production','Dataset prep, class weighting, LoRA, QLoRA, evaluation metrics','Sessions 17-21 · ArtemisAI 6 NLP models'),
+S('t06','llm','LLM & GenAI','var(--indigo)','var(--indigo-dim)','LLM Architecture & Scaling','GPT-4, LLaMA, Mistral, mixture of experts, context windows','Sessions 22-25 · DeepLearning.AI'),
+S('t07','llm','LLM & GenAI','var(--indigo)','var(--indigo-dim)','Prompt Engineering Mastery','System prompts, few-shot, chain-of-thought, structured output, guardrails','Sessions 26-29 · Art-E guardrails'),
+S('t08','llm','LLM & GenAI','var(--indigo)','var(--indigo-dim)','LLM-as-Judge & Annotation','Using LLMs for bulk labelling, consensus pipelines, bias detection','Sessions 30-32 · Three-tier pipeline'),
+S('t09','llm','LLM & GenAI','var(--indigo)','var(--indigo-dim)','LLM APIs & Streaming','OpenAI, Anthropic, DeepSeek — streaming, function calling, cost optimization','Sessions 33-36 · Multi-model routing'),
+S('t10','llm','LLM & GenAI','var(--indigo)','var(--indigo-dim)','LLaMA Fine-tuning','Domain-specific LLM training on social media data, Unsloth, GGUF','Sessions 37-40 · Art-E custom model'),
+S('t11','llm','LLM & GenAI','var(--indigo)','var(--indigo-dim)','Evaluation & Benchmarking','Perplexity, BLEU, human eval, A/B testing LLM outputs','Sessions 41-43 · Quality gates'),
+S('t12','rag','RAG & Agents','var(--violet)','var(--violet-dim)','RAG Architecture','Chunking, embedding, retrieval, reranking, generation — 7-step pipeline','Sessions 44-48 · Art-E pipeline'),
+S('t13','rag','RAG & Agents','var(--violet)','var(--violet-dim)','Vector Databases','Pinecone, Chroma, pgvector — indexing, metadata filtering, similarity search','Sessions 49-51 · 512-dim CLIP vectors'),
+S('t14','rag','RAG & Agents','var(--violet)','var(--violet-dim)','LangChain & Orchestration','Chains, agents, tool use, output parsing, memory management','Sessions 52-55 · Art-E orchestration'),
+S('t15','rag','RAG & Agents','var(--violet)','var(--violet-dim)','AI Agents & Tool Use','ReAct pattern, function calling, multi-step reasoning, autonomous workflows','Sessions 56-60 · HF Agents Course'),
+S('t16','rag','RAG & Agents','var(--violet)','var(--violet-dim)','Graph RAG','Knowledge graphs for RAG, Neo4j, agentic graph construction','Sessions 61-63 · Advanced retrieval'),
+S('t17','rag','RAG & Agents','var(--violet)','var(--violet-dim)','MCP (Model Context Protocol)','Tool integration, structured I/O, external service connections','Sessions 64-66 · Future Art-E'),
+S('t18','production','ArtemisAI Production','var(--amber)','var(--amber-dim)','AWS SageMaker Endpoints','Model deployment, auto-scaling, batch transform, <100ms inference','Sprint 4 · 6 NLP endpoints'),
+S('t19','production','ArtemisAI Production','var(--amber)','var(--amber-dim)','Step Functions Pipelines','Orchestrating 6 parallel NLP models with retry logic, error handling','Sprint 4 · 111K post processing'),
+S('t20','production','ArtemisAI Production','var(--amber)','var(--amber-dim)','Redshift & Data Warehouse','Schema design, materialized views, 25-table architecture','Sprint 3-4 · post_labels, unified_context'),
+S('t21','production','ArtemisAI Production','var(--amber)','var(--amber-dim)','React + Vite + Tailwind','Frontend stack: components, dark theme tokens, Recharts, 10 app pages','Sprint 4+ · Full product UI'),
+S('t22','production','ArtemisAI Production','var(--amber)','var(--amber-dim)','XGBoost Virality Model','52+ features, SHAP explainability, engagement velocity, crisis detection','Sprint 7-10 · 85%+ AUC'),
+S('t23','production','ArtemisAI Production','var(--amber)','var(--amber-dim)','Proactive Insights Engine','Scheduled LLM analysis, auto-generated reports, anomaly detection','Sprint 20 · Art-E insights'),
+];
+
+const RAFEH_SKILLS=[
+S('r01','ai-basics','Understanding AI','var(--sky)','var(--sky-dim)','What is Machine Learning?','Supervised vs unsupervised, training vs inference, models as pattern recognizers','Week 1 · Core concept'),
+S('r02','ai-basics','Understanding AI','var(--sky)','var(--sky-dim)','How NLP Works','Tokenization, embeddings, sentiment — what the 6 ArtemisAI models actually do','Week 1 · Your daily work'),
+S('r03','ai-basics','Understanding AI','var(--sky)','var(--sky-dim)','Understanding Model Accuracy','Precision, recall, F1, confusion matrices — reading benchmark reports','Week 2 · Quality gate metrics'),
+S('r04','ai-basics','Understanding AI','var(--sky)','var(--sky-dim)','The Three-Tier Pipeline','Tier 1/2/3 routing, confidence thresholds, where your audits fit','Week 2 · Core architecture'),
+S('r05','ai-basics','Understanding AI','var(--sky)','var(--sky-dim)','LLMs & Art-E Explained','What GPT-4, DeepSeek and Art-E are, how they generate text, limitations','Week 3 · Understanding Art-E'),
+S('r06','analytics','Analytics Mastery','var(--indigo)','var(--indigo-dim)','Engagement Metrics Deep Dive','Reach vs impressions, engagement rate, viral coefficient, CTR','Core · What every number means'),
+S('r07','analytics','Analytics Mastery','var(--indigo)','var(--indigo-dim)','Content Performance Analysis','Post type comparison, optimal timing, format effectiveness','Core · Content strategy insights'),
+S('r08','analytics','Analytics Mastery','var(--indigo)','var(--indigo-dim)','Audience Segmentation','Demographic clusters, behavioural segments, affinity groups','Sprint 11 · Audience intelligence'),
+S('r09','analytics','Analytics Mastery','var(--indigo)','var(--indigo-dim)','Crisis Detection & Response','Sentiment spike patterns, severity scoring, escalation protocols','Sprint 10 · 2-4hr early warning'),
+S('r10','analytics','Analytics Mastery','var(--indigo)','var(--indigo-dim)','Competitor Benchmarking','Cross-page comparison, industry benchmarks, relative performance','Sprint 8-9 · Multi-page intel'),
+S('r11','quality','QA & Validation','var(--amber)','var(--amber-dim)','NLP Label Validation','Ground truth creation, systematic error ID, annotation guidelines','Sprint 4 · 200-post validation'),
+S('r12','quality','QA & Validation','var(--amber)','var(--amber-dim)','Data Quality Frameworks','Completeness checks, consistency rules, outlier detection, scorecards','Sprint 3-4 · Pipeline QA'),
+S('r13','quality','QA & Validation','var(--amber)','var(--amber-dim)','SQL for Analysts','SELECT, JOIN, GROUP BY, window functions — querying Redshift','Essential · Cross-checking data'),
+S('r14','quality','QA & Validation','var(--amber)','var(--amber-dim)','GDPR & Data Privacy','PII identification, data retention, consent, privacy policies','Sprint 4 · Compliance'),
+S('r15','quality','QA & Validation','var(--amber)','var(--amber-dim)','Reporting & Stakeholder Comms','Sprint reports, data storytelling, presenting to non-technical audiences','Every Sprint · Updates'),
+];
+
+const FILZA_SKILLS=[
+S('f01','legal-ai','AI & Law','var(--rose)','var(--rose-dim)','What is AI? (For Lawyers)','ML basics, how algorithms decide, AI terminology demystified','Week 1 · Foundation'),
+S('f02','legal-ai','AI & Law','var(--rose)','var(--rose-dim)','UK AI Regulation Landscape','AI Safety Institute, EU AI Act implications, upcoming legislation','Week 1-2 · Regulatory context'),
+S('f03','legal-ai','AI & Law','var(--rose)','var(--rose-dim)','GDPR & Data Protection for AI','Lawful basis, automated decisions (Art 22), DPIAs for ML systems','Week 2 · 111K posts processed'),
+S('f04','legal-ai','AI & Law','var(--rose)','var(--rose-dim)','IP & AI-Generated Content','Copyright in AI outputs, training data IP, model ownership','Week 3 · ArtemisAI IP structure'),
+S('f05','legal-compliance','ArtemisAI Compliance','var(--amber)','var(--amber-dim)','Terms of Service Drafting','SaaS ToS for AI products, liability limitations, acceptable use','Sprint 22 · Launch readiness'),
+S('f06','legal-compliance','ArtemisAI Compliance','var(--amber)','var(--amber-dim)','Privacy Policy for Social Data','What ArtemisAI collects and stores — pipeline to legal language','Sprint 4 · GDPR review'),
+S('f07','legal-compliance','ArtemisAI Compliance','var(--amber)','var(--amber-dim)','Facebook Platform Terms','Meta API terms, data usage restrictions, storage rules','Core · API compliance'),
+S('f08','legal-compliance','ArtemisAI Compliance','var(--amber)','var(--amber-dim)','Co-Founder Agreements & Equity','Shareholder agreements, vesting, IP assignment, non-compete','Company · ViralData Ltd'),
+S('f09','legal-compliance','ArtemisAI Compliance','var(--amber)','var(--amber-dim)','SaaS Contract Templates','Enterprise agreements, SLAs, DPAs for B2B clients','Sprint 20-22 · Legal prep'),
+];
+
+const ALEX_SKILLS=[
+S('a01','ai-founders','AI for Founders','var(--amber)','var(--amber-dim)','AI & ML Demystified','What ML actually does, how models learn, training vs inference','Week 1 · Speak confidently'),
+S('a02','ai-founders','AI for Founders','var(--amber)','var(--amber-dim)','LLMs & ChatGPT Explained','How large language models work, capabilities, hallucination risks','Week 1 · Art-E capabilities'),
+S('a03','ai-founders','AI for Founders','var(--amber)','var(--amber-dim)','The ArtemisAI Tech Stack','Redshift, SageMaker, Netlify — what each component does simply','Week 2 · Know your product'),
+S('a04','ai-founders','AI for Founders','var(--amber)','var(--amber-dim)','NLP for Social Media','Sentiment, emotion, toxicity, topic — what our 6 models deliver','Week 2 · Product knowledge'),
+S('a05','product','Product & Growth','var(--lime)','var(--lime-dim)','SaaS Metrics & Pricing','MRR, churn, LTV, CAC — per-page pricing ($0.02-$1.23)','Sprint 20-22 · Monetisation'),
+S('a06','product','Product & Growth','var(--lime)','var(--lime-dim)','AI Product Positioning','Descriptive + Predictive + Prescriptive — selling the vision','Core · Investors & clients'),
+S('a07','product','Product & Growth','var(--lime)','var(--lime-dim)','Competitive Landscape','ArtemisAI vs Sprinklr, Brandwatch, Hootsuite — our AI advantage','Core · Market positioning'),
+S('a08','product','Product & Growth','var(--lime)','var(--lime-dim)','Data as IP','Cross-client learning, network effects, predictive indices','Vision · Long-term value'),
+S('a09','product','Product & Growth','var(--lime)','var(--lime-dim)','AI Ethics & Responsible AI','Bias in ML, transparency, explainability — what people will ask','Week 3 · Trust & credibility'),
+];
+
+const LEWIS_SKILLS=[
+S('l01','ai-lewis','AI Essentials','var(--lime)','var(--lime-dim)','What is AI? (Plain English)','ML in 10 minutes — how computers learn from data, why it matters','Week 1 · Foundation'),
+S('l02','ai-lewis','AI Essentials','var(--lime)','var(--lime-dim)','How ArtemisAI Analyses Posts','6 NLP models explained: sentiment, emotion, toxicity, topic, intent, language','Week 1 · Under the hood'),
+S('l03','ai-lewis','AI Essentials','var(--lime)','var(--lime-dim)','LLMs & Art-E Chatbot','What ChatGPT-style AI is, how Art-E works, what clients can ask','Week 2 · Explaining to partners'),
+S('l04','social','Social Media & Partnerships','var(--teal)','var(--teal-dim)','Facebook API & Data Access','How page data flows in, permissions needed, token management','Core · You hold the keys'),
+S('l05','social','Social Media & Partnerships','var(--teal)','var(--teal-dim)','ArtemisAI Feature Walkthrough','Dashboard, Predictions, Audience, Alerts, Discovery, Art-E — demo-ready','Core · Client demos'),
+S('l06','social','Social Media & Partnerships','var(--teal)','var(--teal-dim)','Virality Prediction Explained','How XGBoost predicts viral posts and what the scores mean','Sprint 7 · Selling predictions'),
+S('l07','social','Social Media & Partnerships','var(--teal)','var(--teal-dim)','Crisis Detection for Clients','2-4hr early warning, alerts, response workflows','Sprint 10 · Key selling point'),
+S('l08','social','Social Media & Partnerships','var(--teal)','var(--teal-dim)','Competitor Positioning','ArtemisAI vs Sprinklr/Brandwatch/Hootsuite — what makes us different','Core · Partnership convos'),
+S('l09','social','Social Media & Partnerships','var(--teal)','var(--teal-dim)','Onboarding New Pages','Step-by-step: client connects FB page, sees first insights','Sprint 22 · Acquisition flow'),
+];
+
+const JILL_SKILLS=[
+S('j01','ai-jill','AI Made Simple','var(--violet)','var(--violet-dim)','What is AI? (Non-Technical)','AI learns patterns from data, like a very fast analyst','Week 1 · No jargon'),
+S('j02','ai-jill','AI Made Simple','var(--violet)','var(--violet-dim)','What ArtemisAI Does','Analyses social media with AI to predict what works','Week 1 · Elevator pitch'),
+S('j03','ai-jill','AI Made Simple','var(--violet)','var(--violet-dim)','AI Safety & Ethics Basics','Why AI can get things wrong, what bias means, how we handle it','Week 2 · Client trust'),
+S('j04','ops','Operations & Management','var(--pink)','var(--pink-dim)','Sprint Process Explained','2-week cycles: plan → build → review → repeat','Core · Team rhythm'),
+S('j05','ops','Operations & Management','var(--pink)','var(--pink-dim)','Reading the Dashboard','What each number means — KPIs, trends, sentiment scores','Core · Understanding the product'),
+S('j06','ops','Operations & Management','var(--pink)','var(--pink-dim)','ClickUp & Project Tracking','Tasks, sprint boards, checking progress, updating statuses','Core · Daily tool'),
+S('j07','ops','Operations & Management','var(--pink)','var(--pink-dim)','Budget & Cost Awareness','AWS costs, SageMaker spend, per-page pricing — what it costs to run','Core · Financial oversight'),
+S('j08','ops','Operations & Management','var(--pink)','var(--pink-dim)','Client Communication','How to talk about ArtemisAI to non-technical people, key talking points','Core · Growth support'),
+];
+
+const HANNAH_SKILLS=[
+S('h01','ai-101','AI 101','var(--pink)','var(--pink-dim)','What is Artificial Intelligence?','Computers learning patterns from data — smart pattern recognition','10 min · Start here'),
+S('h02','ai-101','AI 101','var(--pink)','var(--pink-dim)','What are LLMs?','Large Language Models like ChatGPT: AI that reads and writes text','10 min · The tech behind Art-E'),
+S('h03','ai-101','AI 101','var(--pink)','var(--pink-dim)','What ArtemisAI Does (Simple)','Reads thousands of posts and tells brands what people think','5 min · The one-liner'),
+S('h04','ai-101','AI 101','var(--pink)','var(--pink-dim)','AI Buzzwords Decoded','NLP, sentiment, ML, neural networks — plain English definitions','15 min · Never nod confused again'),
+S('h05','coord','Coordination','var(--amber)','var(--amber-dim)','How Sprints Work','2-week cycles: plan → build → review → repeat','Core · Team cadence'),
+S('h06','coord','Coordination','var(--amber)','var(--amber-dim)','Who Does What','Asad architects, Faheem builds ML, Rafeh validates, Lewis connects pages','Core · Coordination context'),
+S('h07','coord','Coordination','var(--amber)','var(--amber-dim)','Meeting & Schedule Management','Sprint planning, reviews, standups — when and what to prepare','Core · Keeping everyone aligned'),
+];
+
+const SKILL_PATHS={asad:TECH_SKILLS,faheem:TECH_SKILLS,rafeh:RAFEH_SKILLS,filza:FILZA_SKILLS,alex:ALEX_SKILLS,lewis:LEWIS_SKILLS,jill:JILL_SKILLS,hannah:HANNAH_SKILLS};
+
+let currentUser=null,activeTab='my-skills';
+function getStorage(){try{return JSON.parse(localStorage.getItem('artemis_learn_v2')||'{}')}catch{return{}}}
+function saveStorage(d){localStorage.setItem('artemis_learn_v2',JSON.stringify(d))}
+function getUserProgress(u){return getStorage()[u]||{}}
+function setSkillDone(u,s,done){const d=getStorage();if(!d[u])d[u]={};if(done)d[u][s]=Date.now();else delete d[u][s];saveStorage(d)}
+function getUserSkills(u){return SKILL_PATHS[u]||[]}
+function countDone(u){const p=getUserProgress(u);return getUserSkills(u).filter(s=>p[s.id]).length}
+function totalSkills(u){return getUserSkills(u).length}
+
+function renderLogin(){document.getElementById('login-grid').innerHTML=TEAM.map(t=>`<button class="login-btn" onclick="login('${t.id}')"><div class="avatar" style="background:${t.colorDim};color:${t.color}">${t.initials}</div><span>${t.name.split(' ')[0]}</span></button>`).join('')}
+
+function login(uid){const user=TEAM.find(t=>t.id===uid);if(!user)return;const pw=prompt('Enter password for '+user.name.split(' ')[0]+':');if(pw===null)return;if(pw!==user.pass){alert('Incorrect password.');return}currentUser=user;document.getElementById('login-screen').style.display='none';document.getElementById('app').style.display='block';activeTab='my-skills';renderApp()}
+
+function logout(){currentUser=null;document.getElementById('app').style.display='none';document.getElementById('login-screen').style.display='flex'}
+
+function renderApp(){
+const u=currentUser,skills=getUserSkills(u.id),total=skills.length,done=countDone(u.id),pct=total?Math.round(done/total*100):0;
+document.getElementById('topbar-user').textContent=u.name+' ';document.getElementById('topbar-title').textContent=u.title;
+document.getElementById('stat-done').textContent=done;document.getElementById('stat-total').textContent=total;
+const hr=new Date().getHours(),greet=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+document.getElementById('hero-greeting').innerHTML=`${greet}, <b>${u.name.split(' ')[0]}</b>`;
+document.getElementById('hero-tagline').textContent=done===0?`${total} skills tailored for your role`:`${pct}% complete — ${total-done} remaining`;
+renderStats();renderTabs();renderContent()}
+
+function renderStats(){
+const u=currentUser,skills=getUserSkills(u.id),progress=getUserProgress(u.id),done=skills.filter(s=>progress[s.id]).length,total=skills.length,pct=total?Math.round(done/total*100):0;
+const phases=[...new Set(skills.map(s=>s.phase))];
+const ps=phases.map(pid=>{const sk=skills.filter(s=>s.phase===pid),d=sk.filter(s=>progress[s.id]).length;return{name:sk[0].phaseName,pct:Math.round(d/sk.length*100),color:sk[0].phaseColor}}).sort((a,b)=>b.pct-a.pct);
+const tp=ps[0];
+const ts=Object.values(progress).filter(v=>typeof v==='number').sort((a,b)=>b-a);
+let streak=0;if(ts.length){let ck=new Date();ck.setHours(0,0,0,0);for(let i=0;i<365;i++){const ds=new Date(ck),de=new Date(ds);de.setDate(de.getDate()+1);if(ts.some(t=>t>=ds.getTime()&&t<de.getTime())){streak++;ck.setDate(ck.getDate()-1)}else break}}
+document.getElementById('stats-row').innerHTML=`
+<div class="stat-card"><div class="stat-label">Completed</div><div class="stat-value" style="color:var(--teal)">${done}</div><div class="stat-sub">of ${total} skills</div></div>
+<div class="stat-card"><div class="stat-label">Progress</div><div class="stat-value">${pct}%</div><div class="stat-sub">${total-done} remaining</div></div>
+<div class="stat-card"><div class="stat-label">Top Phase</div><div class="stat-value" style="font-size:14px;color:${tp?.color||'var(--muted)'}">${tp?.name||'—'}</div><div class="stat-sub">${tp?.pct||0}% done</div></div>
+<div class="stat-card"><div class="stat-label">Streak</div><div class="stat-value" style="color:var(--amber)">${streak}</div><div class="stat-sub">day${streak!==1?'s':''}</div></div>`}
+
+function renderTabs(){
+const skills=getUserSkills(currentUser.id),phases=[...new Map(skills.map(s=>[s.phase,s.phaseName])).entries()];
+const tabs=[{id:'my-skills',label:'All Skills'},{id:'team',label:'Team'},...phases.map(([id,nm])=>({id,label:nm}))];
+document.getElementById('tabs').innerHTML=tabs.map(t=>`<button class="tab ${activeTab===t.id?'active':''}" onclick="switchTab('${t.id}')">${t.label}</button>`).join('')}
+
+function switchTab(id){activeTab=id;renderTabs();renderContent()}
+
+function renderContent(){
+const el=document.getElementById('content');if(activeTab==='team')return renderTeamView(el);
+const skills=getUserSkills(currentUser.id),phases=[...new Set(skills.map(s=>s.phase))];
+if(activeTab==='my-skills'){el.innerHTML=phases.map(pid=>renderPhaseBlock(skills.filter(s=>s.phase===pid))).join('')}
+else{const f=skills.filter(s=>s.phase===activeTab);el.innerHTML=f.length?renderPhaseBlock(f):'<p style="color:var(--muted)">No skills here.</p>'}}
+
+function renderPhaseBlock(sk){
+if(!sk.length)return '';const progress=getUserProgress(currentUser.id),f=sk[0],done=sk.filter(s=>progress[s.id]).length,pct=Math.round(done/sk.length*100);
+return `<div class="phase-section"><div class="phase-header"><span class="phase-badge" style="background:${f.phaseDim};color:${f.phaseColor}">${f.phaseName}</span><div class="phase-progress-bar"><div class="phase-progress-fill" style="width:${pct}%;background:${f.phaseColor}"></div></div><span class="phase-pct" style="color:${f.phaseColor}">${done}/${sk.length}</span></div><div class="skills-grid">${sk.map(s=>{const d=!!progress[s.id];return`<div class="skill-card ${d?'completed':''}" onclick="toggleSkill('${s.id}')" style="${d?`border-color:${f.phaseColor};background:${f.phaseDim}`:''}"><div class="skill-check" style="${d?`background:${f.phaseColor};border-color:${f.phaseColor}`:''}">${d?'✓':''}</div><div class="skill-info"><div class="skill-name">${s.name}</div><div class="skill-desc">${s.desc}</div><div class="skill-meta">${s.meta}</div></div></div>`}).join('')}</div></div>`}
+
+function toggleSkill(sid){const p=getUserProgress(currentUser.id);setSkillDone(currentUser.id,sid,!p[sid]);renderApp()}
+
+function renderTeamView(el){
+const sorted=[...TEAM].sort((a,b)=>{const ap=totalSkills(a.id)?countDone(a.id)/totalSkills(a.id):0,bp=totalSkills(b.id)?countDone(b.id)/totalSkills(b.id):0;return bp-ap});
+const lb=sorted.map((t,i)=>{const d=countDone(t.id),tot=totalSkills(t.id),pct=tot?Math.round(d/tot*100):0,m=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+return`<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:6px"><span style="font-size:16px;width:28px;text-align:center">${m||`<span style="color:var(--dim);font-family:var(--mono);font-size:12px">${i+1}</span>`}</span><div class="tm-avatar" style="width:32px;height:32px;font-size:11px;background:${t.colorDim};color:${t.color}">${t.initials}</div><div style="flex:1"><div style="font-weight:500;font-size:13px">${t.name}</div><div style="font-size:10px;color:var(--teal);font-family:var(--mono)">${t.title}</div></div><span style="font-family:var(--mono);font-size:12px;color:${t.color}">${d}/${tot}</span><span style="font-family:var(--mono);font-size:11px;color:var(--muted);min-width:36px;text-align:right">${pct}%</span></div>`}).join('');
+const cards=TEAM.map(t=>{const d=countDone(t.id),tot=totalSkills(t.id),pct=tot?Math.round(d/tot*100):0;
+return`<div class="team-member-card"><div class="tm-avatar" style="background:${t.colorDim};color:${t.color}">${t.initials}</div><div class="tm-name">${t.name}</div><div class="tm-title">${t.title}</div><div class="tm-bar"><div class="tm-bar-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="tm-stats"><b>${d}</b> / ${tot} · ${pct}%</div></div>`}).join('');
+el.innerHTML=`<div style="margin-bottom:28px"><h3 style="font-size:16px;font-weight:600;margin-bottom:14px">Leaderboard</h3>${lb}</div><h3 style="font-size:16px;font-weight:600;margin-bottom:4px">Team Progress</h3><div class="team-grid">${cards}</div>`}
+
+renderLogin();
+</script>
+</body>
+</html>
